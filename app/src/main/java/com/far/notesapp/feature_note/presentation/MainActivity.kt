@@ -1,4 +1,4 @@
-package com.far.notesapp
+package com.far.notesapp.feature_note.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
