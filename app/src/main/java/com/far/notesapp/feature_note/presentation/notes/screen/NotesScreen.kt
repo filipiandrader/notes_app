@@ -1,4 +1,4 @@
-package com.far.notesapp.feature_note.presentation.notes
+package com.far.notesapp.feature_note.presentation.notes.screen
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.clickable

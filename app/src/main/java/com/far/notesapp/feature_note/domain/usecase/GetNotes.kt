@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.map
 
 class GetNotes(
     private val repository: NoteRepository
-) : UseCase<List<Note>, GetNotes.Params>(){
+) : UseCase<List<Note>, GetNotes.Params>() {
 
     override fun run(params: Params?) = when (params) {
         null -> throw MissingParamsException()
