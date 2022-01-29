@@ -2,11 +2,13 @@ package com.far.notesapp.di
 
 import android.app.Application
 import androidx.room.Room
+import com.far.notesapp.core.Constants.DATABASE_NAME
 import com.far.notesapp.feature_note.data.datasource.NoteDatabase
 import com.far.notesapp.feature_note.data.repository.NoteRepositoryImpl
 import com.far.notesapp.feature_note.domain.repository.NoteRepository
 import com.far.notesapp.feature_note.domain.usecase.DeleteNote
 import com.far.notesapp.feature_note.domain.usecase.GetNotes
+import com.far.notesapp.feature_note.domain.usecase.InsertNote
 import com.far.notesapp.feature_note.domain.usecase.NoteUseCases
 import dagger.Module
 import dagger.Provides
@@ -24,7 +26,7 @@ object AppModule {
         return Room.databaseBuilder(
             application,
             NoteDatabase::class.java,
-            NoteDatabase.DATABASE_NAME
+            DATABASE_NAME
         ).build()
     }
 
@@ -40,6 +42,7 @@ object AppModule {
         return NoteUseCases(
             getNotes = GetNotes(repository),
             deleteNote = DeleteNote(repository),
+            insertNote = InsertNote(repository)
         )
     }
 }
