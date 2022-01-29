@@ -1,4 +1,4 @@
-package com.far.notesapp.feature_note.data.data_source
+package com.far.notesapp.feature_note.data.datasource
 
 import androidx.room.*
 import com.far.notesapp.feature_note.domain.model.Note
