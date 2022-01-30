@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Sort
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,13 +20,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.far.notesapp.core.Constants.NOTE_COLOR_PARAM
 import com.far.notesapp.core.Constants.NOTE_ID_PARAM
+import com.far.notesapp.feature_note.presentation.add_edit_note.event.UiEvent
 import com.far.notesapp.feature_note.presentation.notes.components.NoteItem
 import com.far.notesapp.feature_note.presentation.notes.components.OrderSection
 import com.far.notesapp.feature_note.presentation.notes.event.NotesEvent
 import com.far.notesapp.feature_note.presentation.notes.viewmodel.NotesViewModel
 import com.far.notesapp.feature_note.presentation.util.RoutesScreens
 import com.far.notesapp.ui.theme.PrimaryDark
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.collect
 
 @ExperimentalAnimationApi
 @Composable
@@ -37,12 +39,27 @@ fun NotesScreen(
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
 
+    LaunchedEffect(key1 = true) {
+        viewModel.uiEventChannel.collect { event ->
+            when (event) {
+                is UiEvent.ShowSnackbarEvent -> {
+                    val result = scaffoldState.snackbarHostState.showSnackbar(
+                        message = event.message,
+                        actionLabel = event.action
+                    )
+                    if (result == SnackbarResult.ActionPerformed) {
+                        viewModel.onEvent(NotesEvent.UndoEvent)
+                    }
+                }
+                else -> Unit
+            }
+        }
+    }
+
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
-                onClick = {
-                    navController.navigate(RoutesScreens.AddNoteScreen.route)
-                },
+                onClick = { navController.navigate(RoutesScreens.AddNoteScreen.route) },
                 backgroundColor = MaterialTheme.colors.primary
             ) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add note")
@@ -113,18 +130,7 @@ fun NotesScreen(
                                         .plus("$NOTE_COLOR_PARAM${note.color}")
                                 )
                             },
-                        onDeleteClickListener = {
-                            viewModel.onEvent(NotesEvent.DeleteEvent(note))
-                            scope.launch {
-                                val result = scaffoldState.snackbarHostState.showSnackbar(
-                                    message = "Note deleted",
-                                    actionLabel = "Undo"
-                                )
-                                if (result == SnackbarResult.ActionPerformed) {
-                                    viewModel.onEvent(NotesEvent.UndoEvent)
-                                }
-                            }
-                        }
+                        onDeleteClickListener = viewModel::onEvent
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                 }

@@ -2,13 +2,13 @@ package com.far.notesapp.feature_note.presentation.notes.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
@@ -23,6 +23,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.ColorUtils
 import com.far.notesapp.feature_note.domain.model.Note
+import com.far.notesapp.feature_note.presentation.notes.event.NotesEvent
+import com.far.notesapp.ui.components.CustomDialog
+import kotlinx.coroutines.launch
 
 @Composable
 fun NoteItem(
@@ -30,8 +33,10 @@ fun NoteItem(
     modifier: Modifier = Modifier,
     cornerRadius: Dp = 8.dp,
     cutCornerSize: Dp = 32.dp,
-    onDeleteClickListener: () -> Unit
+    onDeleteClickListener: (NotesEvent.DeleteEvent) -> Unit
 ) {
+    val openDialogDelete = remember { mutableStateOf(false) }
+
     Box(
         modifier = modifier
     ) {
@@ -82,7 +87,7 @@ fun NoteItem(
             )
         }
         IconButton(
-            onClick = onDeleteClickListener,
+            onClick = { openDialogDelete.value = true },
             modifier = Modifier.align(Alignment.BottomEnd)
         ) {
             Icon(
@@ -90,6 +95,16 @@ fun NoteItem(
                 contentDescription = "Delete note",
                 tint = MaterialTheme.colors.onSurface
             )
+        }
+    }
+
+    if (openDialogDelete.value) {
+        CustomDialog(
+            onEvent = { onDeleteClickListener(NotesEvent.DeleteEvent(note)) },
+            title = "Warning!",
+            textContent = "Are you sure you want to delete this item?"
+        ) {
+            openDialogDelete.value = false
         }
     }
 }

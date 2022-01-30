@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 
 val DarkGray = Color(0xFF202020)
 val PrimaryDark = Color(0xFF404040)
+val Primary = Color(0xFF565656)
 val LightBlue = Color(0xFFD7E8DE)
 
 val RedOrange = Color(0xffffab91)

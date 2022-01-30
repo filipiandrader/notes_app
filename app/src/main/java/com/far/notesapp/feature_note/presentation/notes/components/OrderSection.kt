@@ -1,6 +1,8 @@
 package com.far.notesapp.feature_note.presentation.notes.components
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -18,6 +20,11 @@ fun OrderSection(
     Column(
         modifier = modifier
     ) {
+        Text(
+            text = "Note order by:",
+            style = MaterialTheme.typography.h6
+        )
+        Spacer(modifier = Modifier.height(4.dp))
         Row(
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -36,6 +43,11 @@ fun OrderSection(
                 isSelected = noteOrder is Color,
                 onSelectListener = { onOrderChangeListener(Color(noteOrder.orderType)) })
         }
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = "Order type by:",
+            style = MaterialTheme.typography.h6
+        )
         Spacer(modifier = Modifier.height(4.dp))
         Row(
             modifier = Modifier.fillMaxWidth()
@@ -50,5 +62,6 @@ fun OrderSection(
                 isSelected = noteOrder.orderType is Descending,
                 onSelectListener = { onOrderChangeListener(noteOrder.copy(Descending)) })
         }
+        Spacer(modifier = Modifier.height(4.dp))
     }
 }

@@ -3,6 +3,7 @@ package com.far.notesapp.feature_note.presentation.notes.viewmodel
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.far.notesapp.core.Constants.DEFAULT_ERROR
 import com.far.notesapp.feature_note.domain.model.Note
 import com.far.notesapp.feature_note.domain.usecase.DeleteNote
@@ -12,9 +13,13 @@ import com.far.notesapp.feature_note.domain.usecase.NoteUseCases
 import com.far.notesapp.feature_note.domain.util.NoteOrder
 import com.far.notesapp.feature_note.domain.util.NoteOrder.Date
 import com.far.notesapp.feature_note.domain.util.OrderType.Descending
+import com.far.notesapp.feature_note.presentation.add_edit_note.event.UiEvent
 import com.far.notesapp.feature_note.presentation.notes.event.NotesEvent
 import com.far.notesapp.feature_note.presentation.notes.state.NotesState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,6 +29,9 @@ class NotesViewModel @Inject constructor(
 
     private val _noteState = mutableStateOf(NotesState())
     val noteState: State<NotesState> = _noteState
+
+    private val _uiEventChannel = Channel<UiEvent>()
+    val uiEventChannel = _uiEventChannel.receiveAsFlow()
 
     private var recentlyDeletedNote: Note? = null
 
@@ -64,7 +72,15 @@ class NotesViewModel @Inject constructor(
     private fun deleteNote(note: Note) {
         noteUseCases.deleteNote(
             params = DeleteNote.Params(note),
-            onSuccess = { recentlyDeletedNote = note },
+            onSuccess = {
+                recentlyDeletedNote = note
+                sendUiEvent(
+                    UiEvent.ShowSnackbarEvent(
+                        message = "Todo deleted",
+                        action = "Undo"
+                    )
+                )
+            },
             onError = { _noteState.value = NotesState(error = it.message ?: DEFAULT_ERROR) }
         )
     }
@@ -77,5 +93,9 @@ class NotesViewModel @Inject constructor(
                 onError = { _noteState.value = NotesState(error = it.message ?: DEFAULT_ERROR) }
             )
         }
+    }
+
+    private fun sendUiEvent(uiEvent: UiEvent) {
+        viewModelScope.launch { _uiEventChannel.send(uiEvent) }
     }
 }

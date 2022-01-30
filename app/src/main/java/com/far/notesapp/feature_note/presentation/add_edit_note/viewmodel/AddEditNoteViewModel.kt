@@ -115,7 +115,12 @@ class AddEditNoteViewModel @Inject constructor(
 
     private fun showError(error: String?) {
         viewModelScope.launch {
-            _uiEnventFlow.emit(UiEvent.ShowSnackbarEvent(error ?: DEFAULT_ERROR))
+            _uiEnventFlow.emit(
+                UiEvent.ShowSnackbarEvent(
+                    message = error ?: DEFAULT_ERROR,
+                    action = "Undo"
+                )
+            )
         }
     }
 }
