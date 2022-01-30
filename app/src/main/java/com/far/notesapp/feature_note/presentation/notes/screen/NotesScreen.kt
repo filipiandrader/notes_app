@@ -16,10 +16,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.far.notesapp.core.Constants.NOTE_COLOR_PARAM
+import com.far.notesapp.core.Constants.NOTE_ID_PARAM
 import com.far.notesapp.feature_note.presentation.notes.components.NoteItem
 import com.far.notesapp.feature_note.presentation.notes.components.OrderSection
 import com.far.notesapp.feature_note.presentation.notes.event.NotesEvent
 import com.far.notesapp.feature_note.presentation.notes.viewmodel.NotesViewModel
+import com.far.notesapp.feature_note.presentation.util.RoutesScreens
 import kotlinx.coroutines.launch
 
 @ExperimentalAnimationApi
@@ -35,7 +38,9 @@ fun NotesScreen(
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { },
+                onClick = {
+                    navController.navigate(RoutesScreens.AddNoteScreen.route)
+                },
                 backgroundColor = MaterialTheme.colors.primary
             ) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add note")
@@ -85,7 +90,11 @@ fun NotesScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
-
+                                navController.navigate(
+                                    RoutesScreens.EditNoteScreen.route
+                                        .plus("$NOTE_ID_PARAM${note.id}")
+                                        .plus("$NOTE_COLOR_PARAM${note.color}")
+                                )
                             },
                         onDeleteClickListener = {
                             viewModel.onEvent(NotesEvent.DeleteEvent(note))

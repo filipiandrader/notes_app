@@ -6,7 +6,8 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.far.notesapp.core.Constants
+import com.far.notesapp.core.Constants.DEFAULT_ERROR
+import com.far.notesapp.core.Constants.NOTE_ID
 import com.far.notesapp.feature_note.domain.model.Note
 import com.far.notesapp.feature_note.domain.usecase.GetNote
 import com.far.notesapp.feature_note.domain.usecase.InsertNote
@@ -15,11 +16,13 @@ import com.far.notesapp.feature_note.presentation.add_edit_note.event.AddEditNot
 import com.far.notesapp.feature_note.presentation.add_edit_note.event.AddEditNoteEvent.*
 import com.far.notesapp.feature_note.presentation.add_edit_note.event.UiEvent
 import com.far.notesapp.feature_note.presentation.add_edit_note.state.NoteTextFieldState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class AddEditNoteViewModel @Inject constructor(
     private val noteUseCases: NoteUseCases,
     savedStateHandle: SavedStateHandle
@@ -41,7 +44,7 @@ class AddEditNoteViewModel @Inject constructor(
     private var currentNoteId: Int? = null
 
     init {
-        savedStateHandle.get<Int>("noteId")?.let { noteId ->
+        savedStateHandle.get<Int>(NOTE_ID)?.let { noteId ->
             if (noteId != -1) {
                 getNote(noteId)
             }
@@ -110,7 +113,7 @@ class AddEditNoteViewModel @Inject constructor(
 
     private fun showError(error: String?) {
         viewModelScope.launch {
-            _uiEnventFlow.emit(UiEvent.ShowSnackbarEvent(error ?: Constants.DEFAULT_ERROR))
+            _uiEnventFlow.emit(UiEvent.ShowSnackbarEvent(error ?: DEFAULT_ERROR))
         }
     }
 }

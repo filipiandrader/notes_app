@@ -33,7 +33,7 @@ class NotesViewModel @Inject constructor(
 
     fun onEvent(event: NotesEvent) {
         when (event) {
-            is NotesEvent.OrderEvent -> getNotes(event.noteOrder)
+            is NotesEvent.OrderEvent -> orderNotes(event.noteOrder)
             is NotesEvent.DeleteEvent -> deleteNote(event.note)
             is NotesEvent.UndoEvent -> undoNote()
             is NotesEvent.ToggleOrderSectionEvent -> {
@@ -44,12 +44,16 @@ class NotesViewModel @Inject constructor(
         }
     }
 
-    private fun getNotes(noteOrder: NoteOrder) {
+    private fun orderNotes(noteOrder: NoteOrder) {
         if (_noteState.value.noteOrder::class == noteOrder::class &&
             _noteState.value.noteOrder.orderType == noteOrder.orderType
         ) {
             return
         }
+        getNotes(noteOrder)
+    }
+
+    private fun getNotes(noteOrder: NoteOrder) {
         noteUseCases.getNotes(
             params = GetNotes.Params(noteOrder),
             onSuccess = { _noteState.value = NotesState(notes = it, noteOrder = noteOrder) },
