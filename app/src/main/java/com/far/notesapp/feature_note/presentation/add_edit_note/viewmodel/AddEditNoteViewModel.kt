@@ -87,7 +87,7 @@ class AddEditNoteViewModel @Inject constructor(
     private fun buildNote() = Note(
         id = currentNoteId,
         title = _noteTitleState.value.text,
-        content = _noteTitleState.value.text,
+        content = _noteContentState.value.text,
         timestamp = System.currentTimeMillis(),
         color = _noteColorState.value
     )

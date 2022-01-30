@@ -76,7 +76,7 @@ class NotesViewModel @Inject constructor(
                 recentlyDeletedNote = note
                 sendUiEvent(
                     UiEvent.ShowSnackbarEvent(
-                        message = "Todo deleted",
+                        message = "Note deleted",
                         action = "Undo"
                     )
                 )

@@ -12,7 +12,6 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Sort
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -26,6 +25,7 @@ import com.far.notesapp.feature_note.presentation.notes.components.OrderSection
 import com.far.notesapp.feature_note.presentation.notes.event.NotesEvent
 import com.far.notesapp.feature_note.presentation.notes.viewmodel.NotesViewModel
 import com.far.notesapp.feature_note.presentation.util.RoutesScreens
+import com.far.notesapp.ui.components.CustomEmptyList
 import com.far.notesapp.ui.theme.PrimaryDark
 import kotlinx.coroutines.flow.collect
 
@@ -37,7 +37,6 @@ fun NotesScreen(
 ) {
     val state = viewModel.noteState.value
     val scaffoldState = rememberScaffoldState()
-    val scope = rememberCoroutineScope()
 
     LaunchedEffect(key1 = true) {
         viewModel.uiEventChannel.collect { event ->
@@ -136,5 +135,9 @@ fun NotesScreen(
                 }
             }
         }
+    }
+
+    if (state.notes.isEmpty()) {
+        CustomEmptyList()
     }
 }
