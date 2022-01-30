@@ -1,4 +1,4 @@
-package com.far.notesapp.feature_note.presentation.add_edit_note
+package com.far.notesapp.feature_note.presentation.add_edit_note.screen
 
 import androidx.compose.animation.Animatable
 import androidx.compose.animation.core.tween
@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,6 +28,7 @@ import com.far.notesapp.feature_note.presentation.add_edit_note.components.Trans
 import com.far.notesapp.feature_note.presentation.add_edit_note.event.AddEditNoteEvent
 import com.far.notesapp.feature_note.presentation.add_edit_note.event.UiEvent
 import com.far.notesapp.feature_note.presentation.add_edit_note.viewmodel.AddEditNoteViewModel
+import com.far.notesapp.ui.theme.PrimaryDark
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -70,8 +72,20 @@ fun AddEditNoteScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .background(noteBackgroundAnimatable.value)
-                .padding(16.dp)
         ) {
+            TopAppBar(
+                backgroundColor = PrimaryDark,
+                title = {
+                    Text(
+                        text = viewModel.toolbarTitle
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(Icons.Filled.ArrowBack, "back-button")
+                    }
+                }
+            )
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

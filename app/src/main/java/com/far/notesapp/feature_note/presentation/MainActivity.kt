@@ -14,7 +14,7 @@ import androidx.navigation.navArgument
 import com.far.notesapp.core.Constants.EDIT_PARAMS
 import com.far.notesapp.core.Constants.NOTE_COLOR
 import com.far.notesapp.core.Constants.NOTE_ID
-import com.far.notesapp.feature_note.presentation.add_edit_note.AddEditNoteScreen
+import com.far.notesapp.feature_note.presentation.add_edit_note.screen.AddEditNoteScreen
 import com.far.notesapp.feature_note.presentation.notes.screen.NotesScreen
 import com.far.notesapp.feature_note.presentation.util.RoutesScreens
 import com.far.notesapp.ui.theme.NotesAppTheme

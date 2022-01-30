@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Sort
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -23,6 +24,7 @@ import com.far.notesapp.feature_note.presentation.notes.components.OrderSection
 import com.far.notesapp.feature_note.presentation.notes.event.NotesEvent
 import com.far.notesapp.feature_note.presentation.notes.viewmodel.NotesViewModel
 import com.far.notesapp.feature_note.presentation.util.RoutesScreens
+import com.far.notesapp.ui.theme.PrimaryDark
 import kotlinx.coroutines.launch
 
 @ExperimentalAnimationApi
@@ -49,27 +51,38 @@ fun NotesScreen(
         scaffoldState = scaffoldState
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
+            modifier = Modifier.fillMaxSize()
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Your note",
-                    style = MaterialTheme.typography.h4
-                )
-                IconButton(
-                    onClick = { viewModel.onEvent(NotesEvent.ToggleOrderSectionEvent) }) {
-                    Icon(
-                        imageVector = Icons.Default.Sort,
-                        contentDescription = "Sort"
-                    )
+            TopAppBar(
+                backgroundColor = PrimaryDark,
+                title = {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        val icon = when (state.isOrderSectionVisible) {
+                            true -> Icons.Default.Close
+                            false -> Icons.Default.Sort
+                        }
+                        val contentDescription = when (state.isOrderSectionVisible) {
+                            true -> "Close order section"
+                            false -> "Open order section"
+                        }
+                        Text(
+                            text = "Your notes"
+                        )
+                        IconButton(
+                            onClick = { viewModel.onEvent(NotesEvent.ToggleOrderSectionEvent) }
+                        ) {
+                            Icon(
+                                imageVector = icon,
+                                contentDescription = contentDescription
+                            )
+                        }
+                    }
                 }
-            }
+            )
             AnimatedVisibility(
                 visible = state.isOrderSectionVisible,
                 enter = fadeIn() + slideInVertically(),
@@ -78,12 +91,16 @@ fun NotesScreen(
                 OrderSection(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 16.dp),
+                        .padding(start = 8.dp, end = 8.dp, top = 8.dp),
                     noteOrder = state.noteOrder,
                     onOrderChangeListener = { viewModel.onEvent(NotesEvent.OrderEvent(it)) })
             }
             Spacer(modifier = Modifier.height(8.dp))
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 8.dp)
+            ) {
                 items(state.notes) { note ->
                     NoteItem(
                         note = note,
